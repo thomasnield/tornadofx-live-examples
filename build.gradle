@@ -22,6 +22,8 @@ repositories {
 }
 
 dependencies {
+    compile 'org.nield:kotlinstatistics:0.3.0'
+    compile 'no.tornado:tornadofx:1.7.11'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
