@@ -1,3 +1,4 @@
+import javafx.geometry.Orientation
 import javafx.scene.chart.NumberAxis
 import org.nield.kotlinstatistics.multiKMeansCluster
 import tornadofx.*
@@ -8,22 +9,34 @@ import java.time.temporal.ChronoUnit
 class MyApp: App(MyView::class)
 
 class MyView : View() {
+    override val root = splitpane {
+        orientation = Orientation.HORIZONTAL
 
-    override val root = scatterchart("WBCC Clustering by Age", NumberAxis(), NumberAxis()) {
+        tableview(patients) {
+            column("FIRST NAME", Patient::firstName)
+            column("LAST NAME", Patient::lastName)
+            column("GENDER", Patient::gender)
+            column("BIRTHDAY", Patient::birthday)
+            column("AGE", Patient::age)
+            column("WBCC", Patient::whiteBloodCellCount)
+        }
 
-                patients.multiKMeansCluster(k = 3,
-                        maxIterations = 10000,
-                        trialCount = 50,
-                        xSelector = { it.age.toDouble() },
-                        ySelector = { it.whiteBloodCellCount.toDouble() }
-                )
-                .forEachIndexed { index, centroid ->
-                    series("Group ${index + 1}") {
-                        centroid.points.forEach {
-                            data(it.age, it.whiteBloodCellCount)
-                        }
+        scatterchart("WBCC Clustering by Age", NumberAxis(), NumberAxis()) {
+
+            patients.multiKMeansCluster(k = 3,
+                    maxIterations = 10000,
+                    trialCount = 50,
+                    xSelector = { it.age.toDouble() },
+                    ySelector = { it.whiteBloodCellCount.toDouble() }
+            )
+            .forEachIndexed { index, centroid ->
+                series("Group ${index + 1}") {
+                    centroid.points.forEach {
+                        data(it.age, it.whiteBloodCellCount)
                     }
                 }
+            }
+        }
     }
 }
 
@@ -51,7 +64,7 @@ val patients = listOf(
         Patient("Dan", "Ulrech", Gender.MALE, LocalDate.of(1991, 7, 11), 6000),
         Patient("Heather", "Eisner", Gender.FEMALE, LocalDate.of(1994, 3, 6), 6000),
         Patient("Jasper", "Martin", Gender.MALE, LocalDate.of(1971, 7, 1), 6000)
-)
+).observable()
 
 enum class Gender {
     MALE,
