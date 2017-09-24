@@ -1,4 +1,5 @@
 import javafx.beans.property.ReadOnlyLongWrapper
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
@@ -11,32 +12,61 @@ class MyView : View("My View") {
 
     override val root = borderpane {
 
-        var tableViewEditModel: TableViewEditModel<Patient> by singleAssign()
+        val patientModel = PatientModel()
 
+        left = form {
+            fieldset("NAME") {
+                field("FIRST") {
+                    textfield(patientModel.firstName)
+                }
+                field("LAST") {
+                    textfield(patientModel.lastName)
+                }
+            }
+            fieldset {
+                field("BIRTHDAY") {
+                    datepicker(patientModel.birthday)
+                }
+                field("WBCC") {
+                    textfield(patientModel.wbcc)
+                }
+            }
+            hbox {
+                button("SAVE") {
+                    setOnAction { patientModel.commit() }
+                }
+                button("ROLLBACK") {
+                    hboxConstraints {
+                        marginLeft = 10.0
+                    }
+                    setOnAction { patientModel.rollback() }
+                }
+            }
+
+        }
         center = tableview(patients) {
 
             isEditable = true
 
             column("ID",Patient::patientId)
-            column("FIRST NAME", Patient::firstNameProperty).makeEditable()
-            column("LAST NAME", Patient::lastNameProperty).makeEditable()
-            column("BIRTHDAY", Patient::birthdayProperty).makeEditable()
+            column("FIRST NAME", Patient::firstNameProperty)
+            column("LAST NAME", Patient::lastNameProperty)
+            column("BIRTHDAY", Patient::birthdayProperty)
 
             column("AGE", Patient::ageBinding)
-            column("WBCC", Patient::whiteBloodCellCountProperty).makeEditable()
+            column("WBCC", Patient::whiteBloodCellCountProperty)
 
-            enableDirtyTracking()
-            tableViewEditModel = editModel
-        }
-
-        left = button("SAVE") {
-            setOnAction {
-                tableViewEditModel.commit()
-            }
+            bindSelected(patientModel)
         }
     }
 }
 
+class PatientModel: ItemViewModel<Patient>() {
+    val firstName = bind(Patient::firstNameProperty)
+    val lastName = bind(Patient::lastNameProperty)
+    val birthday = bind(Patient::birthdayProperty)
+    val wbcc = bind(Patient::whiteBloodCellCountProperty)
+}
 
 class Patient(
         val patientId: Int,
@@ -55,7 +85,7 @@ class Patient(
     val birthdayProperty = SimpleObjectProperty(birthday)
     var birthday by birthdayProperty
 
-    val whiteBloodCellCountProperty = SimpleObjectProperty(whiteBloodCellCount)
+    val whiteBloodCellCountProperty = SimpleIntegerProperty(whiteBloodCellCount)
     var whiteBloodCellCount by whiteBloodCellCountProperty
 
     val ageBinding = birthdayProperty.select { ReadOnlyLongWrapper(ChronoUnit.YEARS.between(it,LocalDate.now())) }
