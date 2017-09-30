@@ -5,45 +5,36 @@ import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.*
 
-class MyApp: App(MyView::class)
 
-class MyView : View("My View") {
+val patientModel = PatientModel()
+
+
+class MyApp: App(MyWorkspace::class) {
+    override fun onBeforeShow(view: UIComponent) {
+        workspace.dock<MainView>()
+    }
+}
+
+class MyWorkspace: Workspace() {
+    override fun onRefresh() {
+        Collections.shuffle(patients)
+    }
+}
+
+class MainView: View() {
+    override val root = tabpane {
+        tab(PatientManager::class)
+        tab(PatientEditor::class)
+        connectWorkspaceActions()
+    }
+}
+
+class PatientManager : View("Patient Manager") {
 
     override val root = borderpane {
 
-        val patientModel = PatientModel()
-
-        left = form {
-            fieldset("NAME") {
-                field("FIRST") {
-                    textfield(patientModel.firstName)
-                }
-                field("LAST") {
-                    textfield(patientModel.lastName)
-                }
-            }
-            fieldset {
-                field("BIRTHDAY") {
-                    datepicker(patientModel.birthday)
-                }
-                field("WBCC") {
-                    textfield(patientModel.wbcc)
-                }
-            }
-            hbox {
-                button("SAVE") {
-                    setOnAction { patientModel.commit() }
-                }
-                button("ROLLBACK") {
-                    hboxConstraints {
-                        marginLeft = 10.0
-                    }
-                    setOnAction { patientModel.rollback() }
-                }
-            }
-
-        }
         center = tableview(patients) {
 
             isEditable = true
@@ -57,6 +48,27 @@ class MyView : View("My View") {
             column("WBCC", Patient::whiteBloodCellCountProperty)
 
             bindSelected(patientModel)
+        }
+    }
+}
+
+class PatientEditor: View("Patient Editor") {
+    override val root = form {
+        fieldset("NAME") {
+            field("FIRST") {
+                textfield(patientModel.firstName)
+            }
+            field("LAST") {
+                textfield(patientModel.lastName)
+            }
+        }
+        fieldset {
+            field("BIRTHDAY") {
+                datepicker(patientModel.birthday)
+            }
+            field("WBCC") {
+                textfield(patientModel.wbcc)
+            }
         }
     }
 }
