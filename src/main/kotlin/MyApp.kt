@@ -1,6 +1,3 @@
-import javafx.geometry.Orientation
-import javafx.scene.chart.NumberAxis
-import org.nield.kotlinstatistics.multiKMeansCluster
 import tornadofx.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -9,34 +6,13 @@ import java.time.temporal.ChronoUnit
 class MyApp: App(MyView::class)
 
 class MyView : View() {
-    override val root = splitpane {
-        orientation = Orientation.HORIZONTAL
-
-        tableview(patients) {
-            column("FIRST NAME", Patient::firstName)
-            column("LAST NAME", Patient::lastName)
-            column("GENDER", Patient::gender)
-            column("BIRTHDAY", Patient::birthday)
-            column("AGE", Patient::age)
-            column("WBCC", Patient::whiteBloodCellCount)
-        }
-
-        scatterchart("WBCC Clustering by Age", NumberAxis(), NumberAxis()) {
-
-            patients.multiKMeansCluster(k = 3,
-                    maxIterations = 10000,
-                    trialCount = 50,
-                    xSelector = { it.age.toDouble() },
-                    ySelector = { it.whiteBloodCellCount.toDouble() }
-            )
-            .forEachIndexed { index, centroid ->
-                series("Group ${index + 1}") {
-                    centroid.points.forEach {
-                        data(it.age, it.whiteBloodCellCount)
-                    }
-                }
-            }
-        }
+    override val root = tableview(patients) {
+        column("FIRST NAME", Patient::firstName)
+        column("LAST NAME", Patient::lastName)
+        column("GENDER", Patient::gender)
+        column("BIRTHDAY", Patient::birthday)
+        column("AGE", Patient::age)
+        column("WBCC", Patient::whiteBloodCellCount)
     }
 }
 
