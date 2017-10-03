@@ -28,7 +28,7 @@ class MyView : View("My View") {
                     datepicker(patientModel.birthday)
                 }
                 field("WBCC") {
-                    textfield(patientModel.wbcc)
+                    textfield(patientModel.whiteBloodCellCount)
                 }
             }
             hbox {
@@ -61,13 +61,6 @@ class MyView : View("My View") {
     }
 }
 
-class PatientModel: ItemViewModel<Patient>() {
-    val firstName = bind(Patient::firstNameProperty)
-    val lastName = bind(Patient::lastNameProperty)
-    val birthday = bind(Patient::birthdayProperty)
-    val wbcc = bind(Patient::whiteBloodCellCountProperty)
-}
-
 class Patient(
         val patientId: Int,
         firstName: String,
@@ -92,6 +85,14 @@ class Patient(
     val age by ageBinding
 }
 
+class PatientModel : ItemViewModel<Patient>() {
+    val patientId = bind(Patient::patientId)
+    val firstName = bind(Patient::firstNameProperty)
+    val lastName = bind(Patient::lastNameProperty)
+    val birthday = bind(Patient::birthdayProperty)
+    val whiteBloodCellCount = bind(Patient::whiteBloodCellCountProperty)
+    val ageBinding = bind(Patient::ageBinding)
+}
 
 
 val patients = listOf(
