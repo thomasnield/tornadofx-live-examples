@@ -64,6 +64,8 @@ class MyView : View("My View") {
             column("WBCC", Patient::whiteBloodCellCountProperty)
 
             bindSelected(patientModel)
+
+            smartResize()
         }
     }
 }
