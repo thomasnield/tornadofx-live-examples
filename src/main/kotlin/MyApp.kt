@@ -37,6 +37,7 @@ class PatientsList : View("Patients") {
             deletableWhen {
                 selectionModel.selectedItemProperty().isNotNull
             }
+            smartResize()
         }
     }
 
