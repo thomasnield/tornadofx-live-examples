@@ -2,6 +2,8 @@ import javafx.beans.property.ReadOnlyLongWrapper
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.scene.paint.Color
+import javafx.scene.text.FontWeight
 import tornadofx.*
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -31,15 +33,18 @@ class MyView : View("My View") {
                     textfield(patientModel.whiteBloodCellCount)
                 }
             }
-            hbox {
+            buttonbar {
                 button("SAVE") {
-                    setOnAction { patientModel.commit() }
+                    action { patientModel.commit() }
                 }
                 button("ROLLBACK") {
-                    hboxConstraints {
-                        marginLeft = 10.0
+                    action { patientModel.rollback() }
+
+                    style {
+                        fontWeight = FontWeight.BOLD
+                        fontFamily = "Comic Sans MS"
+                        fill = Color.RED
                     }
-                    setOnAction { patientModel.rollback() }
                 }
             }
 
