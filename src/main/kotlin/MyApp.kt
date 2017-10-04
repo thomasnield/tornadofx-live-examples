@@ -24,7 +24,6 @@ class PatientsList : View("Patients") {
             column("AGE", Patient::ageBinding)
             column("WBCC", Patient::whiteBloodCellCountProperty).makeEditable()
 
-            isEditable = true
             enableDirtyTracking()
 
             subscribe<SavePatientEvent> {
