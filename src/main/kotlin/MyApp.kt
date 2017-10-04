@@ -46,6 +46,8 @@ class MyView : View("My View") {
                         fill = Color.RED
                     }
                 }
+
+                buttons.forEach { it.enableWhen(patientModel.dirty) }
             }
 
         }
