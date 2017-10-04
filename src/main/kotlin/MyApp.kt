@@ -10,6 +10,9 @@ import java.time.temporal.ChronoUnit
 
 class MyApp: App(MyView::class)
 
+
+object PatientSaved: FXEvent()
+
 class MyView : View("My View") {
 
     override val root = borderpane {
@@ -35,7 +38,10 @@ class MyView : View("My View") {
             }
             buttonbar {
                 button("SAVE") {
-                    action { patientModel.commit() }
+                    action {
+                        patientModel.commit()
+                        fire(PatientSaved)
+                    }
                 }
                 button("ROLLBACK") {
                     action { patientModel.rollback() }
@@ -66,6 +72,10 @@ class MyView : View("My View") {
             bindSelected(patientModel)
 
             smartResize()
+
+            subscribe<PatientSaved> {
+                requestResize()
+            }
         }
     }
 }
