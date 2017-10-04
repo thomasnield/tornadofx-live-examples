@@ -43,7 +43,7 @@ class MyView : View("My View") {
                     style {
                         fontWeight = FontWeight.BOLD
                         fontFamily = "Comic Sans MS"
-                        fill = Color.RED
+                        textFill = Color.RED
                     }
                 }
 
