@@ -59,8 +59,6 @@ class MyView : View("My View") {
         }
         center = tableview(patients) {
 
-            isEditable = true
-
             column("ID",Patient::patientId)
             column("FIRST NAME", Patient::firstNameProperty)
             column("LAST NAME", Patient::lastNameProperty)
